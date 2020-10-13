@@ -1,7 +1,9 @@
 const router = require('express').Router();
 const Users = require("./usersModel.js");
+const routeLock = require("../auth/routeLock-mw.js");
+const { route } = require('../api/server.js');
 
-router.get("/", (req, res) => {
+router.get("/", routeLock, (req, res) => {
     
     Users.find()
         .then(users => {

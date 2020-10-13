@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const Users = require("../users/usersModel.js");
 const { jwtSecret } = require("../api/config.js");
 const { isValid } = require("../users/userValidation.js");
+const e = require("express");
 
 
 router.post("/register", (req, res) => {
@@ -42,10 +43,21 @@ router.post("/login", (req, res) => {
 
                 if (user && bcryptjs.compareSync(password, user.password)) {
                     const token = getJwt(user);
+
+                    res.status(200).json({ message: "Welcome to our gang, killa", token });
+                } else {
+                    res.status(401).json({ message: "Invalid credentials" });
                 }
             })
+            .catch(err => {
+                res.status(500).json({ message: error.message });
+            })
+    } else {
+        res.status(400).json({
+            message: "please provide username and password and the password shoud be alphanumeric",
+        });
     }
-})
+});
 
 function getJwt(user) {
     const payload = {
